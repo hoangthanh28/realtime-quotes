@@ -1,0 +1,65 @@
+﻿
+@{
+    ViewData["Title"] = "Price Request";
+}
+<script src="https://cdn.jsdelivr.net/npm/@@aspnet/signalr@1.0.0/dist/browser/signalr.min.js"></script>
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+        var startTime = new Date();
+        var button = document.getElementById('getPriceBtn');
+        var table = document.querySelector('.table');
+       
+        var logMessage = function (sender, obj) {
+            var timeDiff = (new Date() - startTime);
+            table.querySelector("tbody").innerHTML += `<tr><th>${sender}</th><td>${timeDiff} ms</td><td><pre>${JSON.stringify(obj)}</pre></td></tr>`;
+        };
+        var data = '{"Pickupdate": "2019-01-30T09:00:00","Returndate": "2019-02-06T09:00:00","PickupLocationId": "' + document.getElementById('locationCode').value + '","ReturnLocationId": "' + document.getElementById('locationCode').value +'","Currency": "EUR","BookerCountry":"NL","ModuleId":"11","Language": "EN","PromoCode":"","Filter":1,"IncludeMerchants": true,"CacheDisabled": true,            "ClientIpAddress": "8.8.8.8",            "MerchantId": "10"}';
+        var buttonClick = function () {
+            startTime = new Date();
+            $.ajax({
+                type: "GET",
+                url: 'api/quoterequest?city=' + document.getElementById('locationCode').value,
+                success: function (data) {
+                    logMessage("priceRequestSend", data);
+                    connection.on('quotePosted', (message) => {
+                        if (message.taskId == data.taskId) {
+                            logMessage("quotePosted", message)
+                        }
+                    });
+                }
+            });
+        }
+        var connection = new signalR.HubConnectionBuilder()
+            .withUrl('/quoteshub')
+            .build();
+        connection.onclose((error) => logMessage("error", error));
+        connection.start()
+            .then(function () {
+
+                logMessage("connection", "connected");
+            })
+            .catch(function (error) {
+                logMessage("error", error);
+            });
+        button.addEventListener('click', buttonClick);
+    });</script>
+<div>
+    <form>
+        <div class="form-group">
+            <label for="locationCode">Location Code</label>
+            <input type="text" class="form-control" id="locationCode">
+        </div>
+        <button type="button" class="btn btn-primary" id="getPriceBtn">Submit</button>
+    </form>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Sender</th>
+                <th>Latency</th>
+                <th>Message</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
