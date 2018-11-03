@@ -6,22 +6,22 @@ using System.Threading.Tasks;
 
 namespace RealtimeQuotes.Infrastructure.Services
 {
-    public class QuoteService : IQuoteService
+    public abstract class BaseQuoteService : IQuoteService
     {
-        private readonly IHttpClientFactory httpClientFactory;
-        public QuoteService(IHttpClientFactory httpClientFactory)
+        protected readonly HttpClient httpClient;
+        public BaseQuoteService(HttpClient httpClient)
         {
-            this.httpClientFactory = httpClientFactory;
+            this.httpClient = httpClient;
         }
-        public async Task<GetQuoteForSupplierResult> QuoteRequestForCity(object req)
+        protected abstract string BrokerName();
+        public virtual async Task<GetQuoteForSupplierResult> QuoteRequestForCity(object req)
         {
             DateTime start = DateTime.Now;
             var request = req as QuoteRequest;
-            var httpClient = httpClientFactory.CreateClient();
-            var response = await httpClient.GetAsync($"{request.Url}?city={request.CityId}");
+            var response = await httpClient.GetAsync($"/api/{BrokerName()}?city={request.CityId}");
             var result = await response.Content.ReadAsAsync<GetQuoteForSupplierResult>();
             result.ResponseTime = DateTime.Now.Subtract(start).TotalMilliseconds;
-            result.TaskId = request.TaskId.ToString();
+            result.TaskId = request.RoomId.ToString();
             return result;
         }
     }

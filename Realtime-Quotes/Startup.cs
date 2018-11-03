@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using RealtimeQuotes.Infrastructure.Hubs;
 using RealtimeQuotes.Infrastructure.Services;
 using RealtimeQuotes.Infrastructure.Services.Abstraction;
+using System.Collections.Generic;
 
 namespace Realtime_Quotes
 {
@@ -28,13 +29,50 @@ namespace Realtime_Quotes
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-
-            services.AddSingleton<IQuoteService, QuoteService>();
+            
             services.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();
             services.AddSingleton<IPublisher, QuotePublisher>();
             services.AddHostedService<QueuedHostedService>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.AddHttpClient();
+
+            services.AddSingleton<GoogleWeatherQuoteService>();
+            services.AddHttpClient("googleWeather", client =>
+            {
+                client.BaseAddress = new System.Uri("https://weather-fa.azurewebsites.net");
+            }).AddTypedClient<GoogleWeatherQuoteService>();
+
+
+            services.AddSingleton<YahooWeatherQuoteService>();
+            services.AddHttpClient("yahooWeather", client =>
+            {
+                client.BaseAddress = new System.Uri("https://weather-fa.azurewebsites.net");
+            }).AddTypedClient<YahooWeatherQuoteService>();
+
+            services.AddSingleton<OpenWeatherQuoteService>();
+            services.AddHttpClient("openWeather", client =>
+            {
+                client.BaseAddress = new System.Uri("https://weather-fa.azurewebsites.net");
+            }).AddTypedClient<OpenWeatherQuoteService>();
+
+
+            services.AddSingleton<WorldWeatherQuoteService>();
+            services.AddHttpClient("worldWeather", client =>
+            {
+                client.BaseAddress = new System.Uri("https://weather-fa.azurewebsites.net");
+            }).AddTypedClient<WorldWeatherQuoteService>();
+            
+
+            services.AddSingleton<IList<IQuoteService>>(serviceProvider =>
+            {
+
+                return new List<IQuoteService>()
+                {
+                    serviceProvider.GetRequiredService<GoogleWeatherQuoteService>(),
+                    serviceProvider.GetRequiredService<YahooWeatherQuoteService>(),
+                    serviceProvider.GetRequiredService<OpenWeatherQuoteService>(),
+                    serviceProvider.GetRequiredService<WorldWeatherQuoteService>()
+                };
+            });
             services.AddSignalR().AddAzureSignalR();
         }
 

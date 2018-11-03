@@ -3,6 +3,7 @@ using RealtimeQuotes.Infrastructure.Models;
 using RealtimeQuotes.Infrastructure.Services;
 using RealtimeQuotes.Infrastructure.Services.Abstraction;
 using System;
+using System.Collections.Generic;
 
 namespace Realtime_Quotes.Controllers
 {
@@ -11,28 +12,21 @@ namespace Realtime_Quotes.Controllers
     public class QuoteRequestController : ControllerBase
     {
         private readonly IBackgroundTaskQueue Queue;
-        private readonly IQuoteService quoteService;
-        string[] supportServices = new string[] {
-                "https://weather-fa.azurewebsites.net/api/GoogleWeather",
-                "https://weather-fa.azurewebsites.net/api/OpenWeather",
-                "https://weather-fa.azurewebsites.net/api/WorldWeather",
-                "https://weather-fa.azurewebsites.net/api/YahooWeather"
-            };
-        public QuoteRequestController(IBackgroundTaskQueue taskQueue, IQuoteService quoteService)
+        private readonly IList<IQuoteService> supportServices;
+        public QuoteRequestController(IBackgroundTaskQueue taskQueue, IList<IQuoteService> supportServices)
         {
             this.Queue = taskQueue;
-            this.quoteService = quoteService;
+            this.supportServices = supportServices;
         } 
         [HttpPost]
         public IActionResult PostAsync([FromBody]SearchRequest searchRequest, [FromQuery]string roomId)
         {
-            for (int i = 0; i < supportServices.Length; i++)
+            foreach (var service in supportServices)
             {
                 Queue.QueueBackgroundWorkItem(async arg =>
                 {
-                    var result = await quoteService.QuoteRequestForCity(arg);
-                    return result;
-                }, new QuoteRequest { TaskId = roomId, CityId = searchRequest.PickupLocationCode, Url = supportServices[i] });
+                    return await service.QuoteRequestForCity(arg);
+                }, new QuoteRequest { RoomId = roomId, CityId = searchRequest.PickupLocationCode});
             }
             Queue.QueueRelease();
             return Ok(new { TaskId = roomId, City = searchRequest.PickupLocationCode });

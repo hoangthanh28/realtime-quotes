@@ -8,7 +8,7 @@ namespace RealtimeQuotes.Infrastructure.Models
     public class QuoteRequest
     {
         public string Url { get; set; }
-        public string TaskId { get; set; }
+        public string RoomId { get; set; }
         public string CityId { get; set; }
     }
 }
