@@ -20,18 +20,18 @@
                 type: "GET",
                 url: 'api/quoterequest?city=' + document.getElementById('locationCode').value,
                 success: function (data) {
-                    logMessage("OpenSearchRoom", data);
                     connection.send('OpenSearchRoom', data.taskId);
+                    logMessage("OpenSearchRoom", data);
                 }
             });
         }
         var connection = new signalR.HubConnectionBuilder()
             .withUrl('/searchroom')
             .build();
-        connection.onclose((error) => logMessage("error", error));
         connection.on('quotePosted', (message) => {
             logMessage("quotePosted", message)
         });
+        connection.onclose((error) => logMessage("error", error));
         connection.start()
             .then(function () {
                 logMessage("connection", "connected");

@@ -3,7 +3,6 @@ using RealtimeQuotes.Infrastructure.Hubs;
 using RealtimeQuotes.Infrastructure.Models;
 using System;
 using System.Threading.Tasks;
-
 namespace RealtimeQuotes.Infrastructure.Services
 {
     public class QuotePublisher : IPublisher
@@ -16,7 +15,7 @@ namespace RealtimeQuotes.Infrastructure.Services
         public async Task PuslishAsync(string taskId, GetQuoteForSupplierResult result)
         {
             result.Quote = Math.Ceiling(result.Quote);
-            await quotesHub.Clients.Group(taskId).SendCoreAsync("quotePosted", new object[] { result });
+            await quotesHub.Clients.Group(taskId).SendAsync("quotePosted", result);
         }
     }
 }
