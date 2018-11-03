@@ -17,14 +17,14 @@ namespace RealtimeQuotes.Infrastructure.Services
         {
             TaskQueue = taskQueue;
             this.publisher = publisher;
-            TaskQueue.QueueRelease += (sender, e) => {
+            TaskQueue.QueueRelease = () =>
+            {
                 _signal.Release();
             };
         }
 
         protected async override Task ExecuteAsync(CancellationToken cancellationToken)
         {
-           
             var parallelTasks = new List<Task<GetQuoteForSupplierResult>>();
             while (!cancellationToken.IsCancellationRequested)
             {

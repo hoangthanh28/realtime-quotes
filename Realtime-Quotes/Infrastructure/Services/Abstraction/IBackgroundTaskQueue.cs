@@ -12,7 +12,7 @@ namespace RealtimeQuotes.Infrastructure.Services.Abstraction
 
         Task<Tuple<Func<object, Task<GetQuoteForSupplierResult>>, object>> DequeueAsync(CancellationToken cancellationToken);
 
-        EventHandler<EventArgs> QueueRelease { get; set; }
+        Action QueueRelease { get; set; }
 
     }
 }

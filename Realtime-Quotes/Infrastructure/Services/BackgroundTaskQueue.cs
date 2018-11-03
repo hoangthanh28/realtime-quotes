@@ -10,7 +10,7 @@ namespace RealtimeQuotes.Infrastructure.Services
     {
         private Queue<Tuple<Func<object, Task<GetQuoteForSupplierResult>>, object>> _workItems = new Queue<Tuple<Func<object, Task<GetQuoteForSupplierResult>>, object>>();
 
-        public EventHandler<EventArgs> QueueRelease { get; set; }
+        public Action QueueRelease { get; set; }
 
         public bool HasQueueItem()
         {
