@@ -8,15 +8,15 @@ namespace RealtimeQuotes.Infrastructure.Services
 {
     public class QuotePublisher : IPublisher
     {
-        private IHubContext<QuotesHub> quotesHub;
-        public QuotePublisher(IHubContext<QuotesHub> quotesHub)
+        private IHubContext<SearchHub> quotesHub;
+        public QuotePublisher(IHubContext<SearchHub> quotesHub)
         {
             this.quotesHub = quotesHub;
         }
-        public async Task PuslishAsync(string hubName, GetQuoteForSupplierResult result)
+        public async Task PuslishAsync(string taskId, GetQuoteForSupplierResult result)
         {
             result.Quote = Math.Ceiling(result.Quote);
-            await quotesHub.Clients.All.SendCoreAsync("quotePosted", new object[] { result });
+            await quotesHub.Clients.Group(taskId).SendCoreAsync("quotePosted", new object[] { result });
         }
     }
 }

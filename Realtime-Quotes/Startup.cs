@@ -54,7 +54,7 @@ namespace Realtime_Quotes
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
-            app.UseAzureSignalR(routes => routes.MapHub<QuotesHub>("/quoteshub"));
+            app.UseAzureSignalR(routes => routes.MapHub<SearchHub>("/searchroom"));
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

@@ -13,29 +13,27 @@
             var timeDiff = (new Date() - startTime);
             table.querySelector("tbody").innerHTML += `<tr><th>${sender}</th><td>${timeDiff} ms</td><td><pre>${JSON.stringify(obj)}</pre></td></tr>`;
         };
-        var data = '{"Pickupdate": "2019-01-30T09:00:00","Returndate": "2019-02-06T09:00:00","PickupLocationId": "' + document.getElementById('locationCode').value + '","ReturnLocationId": "' + document.getElementById('locationCode').value +'","Currency": "EUR","BookerCountry":"NL","ModuleId":"11","Language": "EN","PromoCode":"","Filter":1,"IncludeMerchants": true,"CacheDisabled": true,            "ClientIpAddress": "8.8.8.8",            "MerchantId": "10"}';
+        //var data = '{"Pickupdate": "2019-01-30T09:00:00","Returndate": "2019-02-06T09:00:00","PickupLocationId": "' + document.getElementById('locationCode').value + '","ReturnLocationId": "' + document.getElementById('locationCode').value +'","Currency": "EUR","BookerCountry":"NL","ModuleId":"11","Language": "EN","PromoCode":"","Filter":1,"IncludeMerchants": true,"CacheDisabled": true,            "ClientIpAddress": "8.8.8.8",            "MerchantId": "10"}';
         var buttonClick = function () {
             startTime = new Date();
             $.ajax({
                 type: "GET",
                 url: 'api/quoterequest?city=' + document.getElementById('locationCode').value,
                 success: function (data) {
-                    logMessage("priceRequestSend", data);
-                    connection.on('quotePosted', (message) => {
-                        if (message.taskId == data.taskId) {
-                            logMessage("quotePosted", message)
-                        }
-                    });
+                    logMessage("OpenSearchRoom", data);
+                    connection.send('OpenSearchRoom', data.taskId);
                 }
             });
         }
         var connection = new signalR.HubConnectionBuilder()
-            .withUrl('/quoteshub')
+            .withUrl('/searchroom')
             .build();
         connection.onclose((error) => logMessage("error", error));
+        connection.on('quotePosted', (message) => {
+            logMessage("quotePosted", message)
+        });
         connection.start()
             .then(function () {
-
                 logMessage("connection", "connected");
             })
             .catch(function (error) {

@@ -6,6 +6,6 @@ namespace RealtimeQuotes.Infrastructure.Services
 {
     public interface IPublisher
     {
-        Task PuslishAsync(string hubName, GetQuoteForSupplierResult result);
+        Task PuslishAsync(string taskId, GetQuoteForSupplierResult result);
     }
 }
