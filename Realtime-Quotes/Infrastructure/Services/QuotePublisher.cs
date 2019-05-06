@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json.Linq;
 using RealtimeQuotes.Infrastructure.Hubs;
 using RealtimeQuotes.Infrastructure.Models;
 using System;
@@ -12,10 +13,10 @@ namespace RealtimeQuotes.Infrastructure.Services
         {
             this.quotesHub = quotesHub;
         }
-        public async Task PuslishAsync(string taskId, GetQuoteForSupplierResult result)
+        public Task PuslishAsync(string taskId, JObject result)
         {
-            result.Quote = Math.Ceiling(result.Quote);
-            await quotesHub.Clients.Group(taskId).SendAsync("quotePosted", result);
+            //result.Quote = Math.Ceiling(result.Quote);
+            return quotesHub.Clients.Group(taskId).SendAsync("quotePosted", result);
         }
     }
 }

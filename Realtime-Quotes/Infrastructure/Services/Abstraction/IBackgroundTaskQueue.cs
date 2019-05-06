@@ -7,12 +7,7 @@ namespace RealtimeQuotes.Infrastructure.Services.Abstraction
 {
     public interface IBackgroundTaskQueue
     {
-        bool HasQueueItem();
-        void QueueBackgroundWorkItem(Func<object, Task<GetQuoteForSupplierResult>> workItem, object state);
-
-        Task<Tuple<Func<object, Task<GetQuoteForSupplierResult>>, object>> DequeueAsync(CancellationToken cancellationToken);
-
-        Action QueueRelease { get; set; }
+        void QueueBackgroundWorkItem(Func<object, Task> data, object state = null);
 
     }
 }

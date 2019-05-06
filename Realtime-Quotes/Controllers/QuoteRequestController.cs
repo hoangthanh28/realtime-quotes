@@ -1,9 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using RealtimeQuotes.Infrastructure.Models;
 using RealtimeQuotes.Infrastructure.Services;
 using RealtimeQuotes.Infrastructure.Services.Abstraction;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Realtime_Quotes.Controllers
 {
@@ -13,23 +17,29 @@ namespace Realtime_Quotes.Controllers
     {
         private readonly IBackgroundTaskQueue Queue;
         private readonly IList<IQuoteService> supportServices;
-        public QuoteRequestController(IBackgroundTaskQueue taskQueue, IList<IQuoteService> supportServices)
+        private IPublisher publisher;
+        public QuoteRequestController(IBackgroundTaskQueue taskQueue, IList<IQuoteService> supportServices, IPublisher publisher)
         {
             this.Queue = taskQueue;
             this.supportServices = supportServices;
-        } 
+            this.publisher = publisher;
+        }
         [HttpPost]
-        public IActionResult PostAsync([FromBody]SearchRequest searchRequest, [FromQuery]string roomId)
+        public IActionResult PostAsync([FromBody]JObject searchRequest, [FromQuery]string roomId)
         {
-            foreach (var service in supportServices)
+            Queue.QueueBackgroundWorkItem(async arg =>
             {
-                Queue.QueueBackgroundWorkItem(async arg =>
+                var services = supportServices.Select(x => x.QuoteRequestAsync(searchRequest)).ToList();
+                while (services.Any())
                 {
-                    return await service.QuoteRequestForCity(arg);
-                }, new QuoteRequest { RoomId = roomId, CityId = searchRequest.PickupLocationCode});
-            }
-            Queue.QueueRelease();
-            return Ok(new { TaskId = roomId, City = searchRequest.PickupLocationCode });
+                    var completedTask = await Task.WhenAny(services);
+                    services.Remove(completedTask);
+                    var result = await completedTask;
+                    await publisher.PuslishAsync(roomId, result);
+                }
+            });
+
+            return Ok();
         }
     }
 }

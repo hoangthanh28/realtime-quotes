@@ -1,10 +1,11 @@
-﻿using RealtimeQuotes.Infrastructure.Models;
+﻿using Newtonsoft.Json.Linq;
+using RealtimeQuotes.Infrastructure.Models;
 using System.Threading.Tasks;
 
 namespace RealtimeQuotes.Infrastructure.Services.Abstraction
 {
     public interface IQuoteService
     {
-        Task<GetQuoteForSupplierResult> QuoteRequestForCity(object request);
+        Task<JObject> QuoteRequestAsync(JObject request);
     }
 }
