@@ -14,10 +14,13 @@ namespace RealtimeQuotes.Infrastructure.Services
         {
         }
         protected abstract HttpClient GetHttpClient();
+        protected abstract int GetMerchantId();
         public virtual async Task<JObject> QuoteRequestAsync(JObject req)
         {
             DateTime start = DateTime.Now;
-            var response = await GetHttpClient().PostAsync($"pw.axd?pricewatchservice.svc/web/GetPrices", new StringContent(req.ToString(), Encoding.UTF8, "application/json"));
+            var client = GetHttpClient();
+            req["MerchantId"] = GetMerchantId();
+            var response = await client.PostAsync($"pw.axd?pricewatchservice.svc/web/GetPrices", new StringContent(req.ToString(), Encoding.UTF8, "application/json"));
             var result = await response.Content.ReadAsAsync<JObject>();
             result["ResponseTime"] = DateTime.Now.Subtract(start).TotalMilliseconds;
             //result.TaskId = request.RoomId.ToString();

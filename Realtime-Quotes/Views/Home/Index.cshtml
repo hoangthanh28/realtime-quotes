@@ -18,10 +18,10 @@
             var roomId = uuidv4();
             connection.send('OpenSearchRoom', roomId);
             logMessage("OpenRoom", roomId);
-            var data = '{"Pickupdate": "2019-01-30T09:00:00","Returndate": "2019-02-06T09:00:00","PickupLocationCode": "' + document.getElementById('locationCode').value + '","ReturnLocationCode": "' + document.getElementById('locationCode').value + '","Currency": "EUR","BookerCountry":"NL","ModuleId":"11","Language": "EN","PromoCode":"","Filter":1,"IncludeMerchants": true,"CacheDisabled": true,            "ClientIpAddress": "8.8.8.8",            "MerchantId": "10"}';
+            var data = '{"Pickupdate": "2019-06-25T09:00:00","Returndate": "2019-06-30T09:00:00","PickupLocationCode": "' + document.getElementById('locationCode').value + '","ReturnLocationCode": "' + document.getElementById('locationCode').value + '","Currency": "EUR","BookerCountry":"NL","ModuleId":"11","Language": "EN","PromoCode":"","Filter":1,"IncludeMerchants": true,"CacheDisabled": true,            "ClientIpAddress": "8.8.8.8"}';
             $.ajax({
                 type: "POST",
-                url: 'api/quoterequest?city=' + document.getElementById('locationCode').value + '&roomId=' + roomId,
+                url: 'api/quoterequest?roomId=' + roomId,
                 data: data,
                 contentType: "application/json"
             });

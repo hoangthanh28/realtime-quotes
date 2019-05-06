@@ -38,7 +38,6 @@ namespace Realtime_Quotes.Controllers
                     await publisher.PuslishAsync(roomId, result);
                 }
             });
-
             return Ok();
         }
     }

@@ -51,6 +51,36 @@ namespace Realtime_Quotes
                     serviceProvider.GetRequiredService<RCQuoteService>()
                 };
             });
+            services.AddHttpClient("ae", client =>
+            {
+                client.BaseAddress = new System.Uri("https://pwc-api-test-wa.azurewebsites.net");
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", "jWhDkSCe8BBudvVxKt/Q4g==");
+
+            });
+            services.AddHttpClient("hc", client =>
+            {
+                client.BaseAddress = new System.Uri("https://pwc-api-test-wa.azurewebsites.net");
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", "jWhDkSCe8BBudvVxKt/Q4g==");
+
+            });
+            services.AddHttpClient("ct", client =>
+            {
+                client.BaseAddress = new System.Uri("https://pwc-api-test-wa.azurewebsites.net");
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", "jWhDkSCe8BBudvVxKt/Q4g==");
+
+            });
+            services.AddHttpClient("rc", client =>
+            {
+                client.BaseAddress = new System.Uri("https://pwc-api-test-wa.azurewebsites.net");
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", "jWhDkSCe8BBudvVxKt/Q4g==");
+
+            });
+            services.AddHttpClient("cr8", client =>
+            {
+                client.BaseAddress = new System.Uri("https://pwc-api-test-wa.azurewebsites.net");
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", "jWhDkSCe8BBudvVxKt/Q4g==");
+
+            });
             services.AddSignalR().AddAzureSignalR();
         }
 

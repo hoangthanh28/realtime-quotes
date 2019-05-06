@@ -14,5 +14,9 @@ namespace RealtimeQuotes.Infrastructure.Services
         {
             return clientFactory.CreateClient("rc");
         }
+        protected override int GetMerchantId()
+        {
+            return 8;
+        }
     }
 }
