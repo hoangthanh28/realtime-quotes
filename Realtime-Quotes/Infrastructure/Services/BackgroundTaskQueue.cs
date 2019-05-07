@@ -9,7 +9,7 @@ namespace RealtimeQuotes.Infrastructure.Services
 {
     public class BackgroundTaskQueue : IBackgroundTaskQueue
     {
-        private const int MAX_THREADS = 4;
+        private const int MAX_THREADS = 100;
         private readonly BlockingCollection<Tuple<Func<object, Task>, object>>[] _messageQueues = new BlockingCollection<Tuple<Func<object, Task>, object>>[MAX_THREADS];
         private readonly Thread[] _processingThreads = new Thread[MAX_THREADS];
         private readonly object _syncObject = new object();

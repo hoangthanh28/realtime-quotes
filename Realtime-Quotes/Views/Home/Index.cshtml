@@ -7,11 +7,33 @@
     document.addEventListener('DOMContentLoaded', function () {
         var startTime = new Date();
         var button = document.getElementById('getPriceBtn');
-        var table = document.querySelector('.table');
+        var table = document.querySelector('#table');
+        var table1 = document.querySelector('#table1');
 
         var logMessage = function (sender, obj) {
             var timeDiff = (new Date() - startTime);
             table.querySelector("tbody").innerHTML += `<tr><th>${sender}</th><td>${timeDiff} ms</td><td><pre>${JSON.stringify(obj)}</pre></td></tr>`;
+        };
+        var showCar = function (sender, obj) {
+            var timeDiff = (new Date() - startTime);
+            logMessage(sender, obj);
+            if(obj.IsSuccess === true){
+                var priceResult  = obj.PriceResults;
+                priceResult.forEach(function(element)
+                {
+                    table1.querySelector("tbody").innerHTML += `<tr>
+                        <th>${obj.RequestId}</th>
+                        <th>${obj.Request.MerchantId}</th>
+                        <td>${timeDiff} ms</td>
+                        <td>${element.SupplierId}</td>
+                        <td>${element.CarClassId}</td>
+                        <td>${element.CarName}</td>
+                        <td>${element.Doors}</td>
+                        <td>${element.TotalPrice}</td>
+                        <td>${element.RateId}</td>
+                    </tr>`;
+                });
+            }
         };
         var buttonClick = function () {
             startTime = new Date();
@@ -30,7 +52,7 @@
             .withUrl('/searchroom')
             .build();
         connection.on('quotePosted', (message) => {
-            logMessage("quotePosted", message)
+            showCar("quotePosted", message)
         });
         connection.onclose((error) => logMessage("error", error));
         connection.start()
@@ -57,12 +79,28 @@
         </div>
         <button type="button" class="btn btn-primary" id="getPriceBtn">Submit</button>
     </form>
-    <table class="table">
+    <table class="table" id="table">
         <thead>
             <tr>
                 <th>Sender</th>
                 <th>Latency</th>
                 <th>Message</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <table class="table" id="table1">
+        <thead>
+            <tr>
+                <th>RequestId</th>
+                <th>MerchantId</th>
+                <th>Duration</th>
+                <th>Supplier</th>
+                <th>CarClass</th>
+                <th>CarName</th>
+                <th>CarDoor</th>
+                <th>TotaPrice</th>
+                <th>RateId</th>
             </tr>
         </thead>
         <tbody></tbody>
