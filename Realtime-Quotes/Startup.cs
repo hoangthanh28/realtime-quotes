@@ -53,31 +53,31 @@ namespace Realtime_Quotes
             });
             services.AddHttpClient("ae", client =>
             {
-                client.BaseAddress = new System.Uri("https://pwc-api-test-wa.azurewebsites.net");
+                client.BaseAddress = new System.Uri(Configuration["AppSettings:Endpoint"]);
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", "jWhDkSCe8BBudvVxKt/Q4g==");
 
             });
             services.AddHttpClient("hc", client =>
             {
-                client.BaseAddress = new System.Uri("https://pwc-api-test-wa.azurewebsites.net");
+                client.BaseAddress = new System.Uri(Configuration["AppSettings:Endpoint"]);
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", "jWhDkSCe8BBudvVxKt/Q4g==");
 
             });
             services.AddHttpClient("ct", client =>
             {
-                client.BaseAddress = new System.Uri("https://pwc-api-test-wa.azurewebsites.net");
+                client.BaseAddress = new System.Uri(Configuration["AppSettings:Endpoint"]);
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", "jWhDkSCe8BBudvVxKt/Q4g==");
 
             });
             services.AddHttpClient("rc", client =>
             {
-                client.BaseAddress = new System.Uri("https://pwc-api-test-wa.azurewebsites.net");
+                client.BaseAddress = new System.Uri(Configuration["AppSettings:Endpoint"]);
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", "jWhDkSCe8BBudvVxKt/Q4g==");
 
             });
             services.AddHttpClient("cr8", client =>
             {
-                client.BaseAddress = new System.Uri("https://pwc-api-test-wa.azurewebsites.net");
+                client.BaseAddress = new System.Uri(Configuration["AppSettings:Endpoint"]);
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", "jWhDkSCe8BBudvVxKt/Q4g==");
 
             });
