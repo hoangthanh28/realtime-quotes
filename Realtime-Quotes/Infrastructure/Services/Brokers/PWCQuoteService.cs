@@ -2,17 +2,17 @@
 
 namespace RealtimeQuotes.Infrastructure.Services
 {
-    public class AEQuoteService : BaseQuoteService
+    public class PWCQuoteService : BaseQuoteService
     {
         private IHttpClientFactory clientFactory;
-        public AEQuoteService(IHttpClientFactory clientFactory) : base()
+        public PWCQuoteService(IHttpClientFactory clientFactory) : base()
         {
             this.clientFactory = clientFactory;
         }
 
         protected override HttpClient GetHttpClient()
         {
-            return clientFactory.CreateClient("ae");
+            return clientFactory.CreateClient("pwc");
         }
 
         protected override int GetMerchantId()

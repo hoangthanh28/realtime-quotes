@@ -19,7 +19,7 @@ namespace RealtimeQuotes.Infrastructure.Services
         {
             DateTime start = DateTime.Now;
             var client = GetHttpClient();
-            req["MerchantId"] = GetMerchantId();
+            //req["MerchantId"] = GetMerchantId();
             var response = await client.PostAsync($"pw.axd?pricewatchservice.svc/web/GetPrices", new StringContent(req.ToString(), Encoding.UTF8, "application/json"));
             var result = await response.Content.ReadAsAsync<JObject>();
             result["ResponseTime"] = DateTime.Now.Subtract(start).TotalMilliseconds;

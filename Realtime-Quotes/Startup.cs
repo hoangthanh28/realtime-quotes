@@ -35,53 +35,53 @@ namespace Realtime_Quotes
             services.AddSingleton<IPublisher, QuotePublisher>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            services.AddSingleton<AEQuoteService>();
-            services.AddSingleton<CR8QuoteService>();
-            services.AddSingleton<CTQuoteService>();
-            services.AddSingleton<HCQuoteService>();
-            services.AddSingleton<RCQuoteService>();
-            services.AddSingleton<IList<IQuoteService>>(serviceProvider =>
-            {
+            services.AddSingleton<IQuoteService, PWCQuoteService>();
+            // services.AddSingleton<CR8QuoteService>();
+            // services.AddSingleton<CTQuoteService>();
+            // services.AddSingleton<HCQuoteService>();
+            // services.AddSingleton<RCQuoteService>();
+            // services.AddSingleton<IList<IQuoteService>>(serviceProvider =>
+            // {
 
-                return new List<IQuoteService>()
-                {
-                    serviceProvider.GetRequiredService<AEQuoteService>(),
-                    serviceProvider.GetRequiredService<CR8QuoteService>(),
-                    serviceProvider.GetRequiredService<CTQuoteService>(),
-                    serviceProvider.GetRequiredService<HCQuoteService>(),
-                    serviceProvider.GetRequiredService<RCQuoteService>()
-                };
-            });
-            services.AddHttpClient("ae", client =>
-            {
-                client.BaseAddress = new System.Uri(Configuration["AppSettings:Endpoint"]);
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", "jWhDkSCe8BBudvVxKt/Q4g==");
-
-            });
-            services.AddHttpClient("hc", client =>
+            //     return new List<IQuoteService>()
+            //     {
+            //         serviceProvider.GetRequiredService<AEQuoteService>(),
+            //         serviceProvider.GetRequiredService<CR8QuoteService>(),
+            //         serviceProvider.GetRequiredService<CTQuoteService>(),
+            //         serviceProvider.GetRequiredService<HCQuoteService>(),
+            //         serviceProvider.GetRequiredService<RCQuoteService>()
+            //     };
+            // });
+            services.AddHttpClient("pwc", client =>
             {
                 client.BaseAddress = new System.Uri(Configuration["AppSettings:Endpoint"]);
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", "jWhDkSCe8BBudvVxKt/Q4g==");
 
             });
-            services.AddHttpClient("ct", client =>
-            {
-                client.BaseAddress = new System.Uri(Configuration["AppSettings:Endpoint"]);
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", "jWhDkSCe8BBudvVxKt/Q4g==");
+            // services.AddHttpClient("hc", client =>
+            // {
+            //     client.BaseAddress = new System.Uri(Configuration["AppSettings:Endpoint"]);
+            //     client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", "jWhDkSCe8BBudvVxKt/Q4g==");
 
-            });
-            services.AddHttpClient("rc", client =>
-            {
-                client.BaseAddress = new System.Uri(Configuration["AppSettings:Endpoint"]);
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", "jWhDkSCe8BBudvVxKt/Q4g==");
+            // });
+            // services.AddHttpClient("ct", client =>
+            // {
+            //     client.BaseAddress = new System.Uri(Configuration["AppSettings:Endpoint"]);
+            //     client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", "jWhDkSCe8BBudvVxKt/Q4g==");
 
-            });
-            services.AddHttpClient("cr8", client =>
-            {
-                client.BaseAddress = new System.Uri(Configuration["AppSettings:Endpoint"]);
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", "jWhDkSCe8BBudvVxKt/Q4g==");
+            // });
+            // services.AddHttpClient("rc", client =>
+            // {
+            //     client.BaseAddress = new System.Uri(Configuration["AppSettings:Endpoint"]);
+            //     client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", "jWhDkSCe8BBudvVxKt/Q4g==");
 
-            });
+            // });
+            // services.AddHttpClient("cr8", client =>
+            // {
+            //     client.BaseAddress = new System.Uri(Configuration["AppSettings:Endpoint"]);
+            //     client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", "jWhDkSCe8BBudvVxKt/Q4g==");
+
+            // });
             services.AddSignalR().AddAzureSignalR();
             services.AddSingleton<ConnectionMultiplexer>(service =>
             {

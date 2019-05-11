@@ -2,7 +2,7 @@
 @{
     ViewData["Title"] = "Price Request";
 }
-<script src="https://cdn.jsdelivr.net/npm/@@aspnet/signalr@1.0.0/dist/browser/signalr.min.js"></script>
+<script src="/lib/signalr/signalr.min.js"></script>
 <script type="text/javascript">
     document.addEventListener('DOMContentLoaded', function () {
         var startTime = new Date();
@@ -16,6 +16,7 @@
         };
         var showCar = function (sender, obj) {
             var timeDiff = (new Date() - startTime);
+            table1.querySelector("tbody").innerHTML="";
             logMessage(sender, obj);
             if(obj.IsSuccess === true){
                 var priceResult  = obj.PriceResults;
@@ -23,7 +24,7 @@
                 {
                     table1.querySelector("tbody").innerHTML += `<tr>
                         <th>${obj.RequestId}</th>
-                        <th>${obj.Request.MerchantId}</th>
+                        <th>${element.MerchantId}</th>
                         <td>${timeDiff} ms</td>
                         <td>${element.SupplierId}</td>
                         <td>${element.CarClassId}</td>
@@ -39,6 +40,8 @@
             startTime = new Date();
             var roomId = uuidv4();
             connection.send('OpenSearchRoom', roomId);
+            table.querySelector("tbody").innerHTML="";
+            table1.querySelector("tbody").innerHTML="";
             logMessage("OpenRoom", roomId);
             var data = '{"Pickupdate": "2019-06-25T09:00:00","Returndate": "2019-06-30T09:00:00","PickupLocationCode": "' + document.getElementById('locationCode').value + '","ReturnLocationCode": "' + document.getElementById('locationCode').value + '","Currency": "EUR","BookerCountry":"NL","ModuleId":"11","Language": "EN","PromoCode":"","Filter":1,"IncludeMerchants": true,"CacheDisabled": true,            "ClientIpAddress": "8.8.8.8"}';
             $.ajax({
@@ -49,7 +52,7 @@
             });
         }
         var connection = new signalR.HubConnectionBuilder()
-            .withUrl('/searchroom')
+            .withUrl('@ViewData["Endpoint"]/searchroom')
             .build();
         connection.on('quotePosted', (message) => {
               $.ajax({
