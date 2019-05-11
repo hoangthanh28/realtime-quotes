@@ -16,27 +16,23 @@ namespace Realtime_Quotes.Controllers
     public class QuoteRequestController : ControllerBase
     {
         private readonly IBackgroundTaskQueue Queue;
-        private readonly IList<IQuoteService> supportServices;
+        private readonly IQuoteService pwcQuoteService;
         private IPublisher publisher;
-        public QuoteRequestController(IBackgroundTaskQueue taskQueue, IList<IQuoteService> supportServices, IPublisher publisher)
+        public QuoteRequestController(IBackgroundTaskQueue taskQueue,
+                                    IPublisher publisher,
+                                    IQuoteService pwcQuoteService)
         {
             this.Queue = taskQueue;
-            this.supportServices = supportServices;
             this.publisher = publisher;
+            this.pwcQuoteService = pwcQuoteService;
         }
         [HttpPost]
         public IActionResult PostAsync([FromBody]JObject searchRequest, [FromQuery]string roomId)
         {
+            searchRequest["EventId"] = roomId;
             Queue.QueueBackgroundWorkItem(async arg =>
             {
-                var services = supportServices.Select(x => x.QuoteRequestAsync(searchRequest)).ToList();
-                while (services.Any())
-                {
-                    var completedTask = await Task.WhenAny(services);
-                    services.Remove(completedTask);
-                    var result = await completedTask;
-                    await publisher.PuslishAsync(roomId, result);
-                }
+                await pwcQuoteService.QuoteRequestAsync(searchRequest);
             });
             return Ok();
         }

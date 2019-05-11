@@ -4,14 +4,16 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Realtime_Quotes.Models;
 
 namespace Realtime_Quotes.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        public IActionResult Index([FromServices]IConfiguration configuration)
         {
+            ViewData["Endpoint"] = configuration["AppSettings:Endpoint"].TrimEnd('/');
             return View();
         }
 
