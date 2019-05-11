@@ -52,7 +52,14 @@
             .withUrl('/searchroom')
             .build();
         connection.on('quotePosted', (message) => {
-            showCar("quotePosted", message)
+              $.ajax({
+                type: "GET",
+                url: 'api/quoterequest?requestId=' + message.RequestId,
+                success: function (res){
+                    showCar("quotePosted", res)
+                }
+            });
+            
         });
         connection.onclose((error) => logMessage("error", error));
         connection.start()

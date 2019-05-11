@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using RealtimeQuotes.Infrastructure.Core;
 using RealtimeQuotes.Infrastructure.Models;
 using RealtimeQuotes.Infrastructure.Services;
 using RealtimeQuotes.Infrastructure.Services.Abstraction;
+using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,6 +42,20 @@ namespace Realtime_Quotes.Controllers
                 }
             });
             return Ok();
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetCacheAsync([FromQuery]string requestId, [FromServices]ConnectionMultiplexer redisCache)
+        {
+            var cache = redisCache.GetDatabase();
+            var result = await cache.StringGetAsync(requestId);
+            if (!string.IsNullOrEmpty(result))
+            {
+                return Ok(JsonConvert.DeserializeObject<JObject>(result, Constant.JsonSerializerSetting));
+            }
+            else
+            {
+                return BadRequest($"RequestId ({requestId}) was not found.");
+            }
         }
     }
 }

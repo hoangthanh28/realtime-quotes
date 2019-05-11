@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using RealtimeQuotes.Infrastructure.Hubs;
 using RealtimeQuotes.Infrastructure.Services;
 using RealtimeQuotes.Infrastructure.Services.Abstraction;
+using StackExchange.Redis;
 using System.Collections.Generic;
 
 namespace Realtime_Quotes
@@ -82,6 +83,11 @@ namespace Realtime_Quotes
 
             });
             services.AddSignalR().AddAzureSignalR();
+            services.AddSingleton<ConnectionMultiplexer>(service =>
+            {
+                string cacheConnection = Configuration.GetConnectionString("RedisCache");
+                return ConnectionMultiplexer.Connect(cacheConnection);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
